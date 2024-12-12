@@ -17,13 +17,14 @@ export interface User {
   id: string;
   name: string;
   avatar: string;
+  status: 'online' | 'offline' | 'away';
+  lastActive: Date;
   location: {
     lat: number;
     lng: number;
   };
-  status: 'online' | 'offline' | 'away';
-  lastActive: Date;
   peerId?: string;
+
 }
 
 export interface AdminUser {
@@ -38,6 +39,16 @@ export interface AdminUser {
 
 export interface LocationHistory {
   timestamp: Date;
+  location: {
+    lat: number;
+    lng: number;
+  };
+  
+}
+
+export interface Location {
+  timestamp:Date;
+  id:string;
   location: {
     lat: number;
     lng: number;

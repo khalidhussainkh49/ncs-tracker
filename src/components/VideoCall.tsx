@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { Video, PhoneOff, Maximize2 } from 'lucide-react';
 import VideoService from '../services/videoService';
+import SocketService from '../services/socketService';
+import { Socket } from 'socket.io-client';
 
 interface VideoCallProps {
   selectedUserId?: string;
@@ -11,9 +13,23 @@ export default function VideoCall({ selectedUserId }: VideoCallProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const videoService = VideoService.getInstance();
+  const socketService = SocketService.getInstance();
 
   const startCall = async () => {
+    const peerId = videoService.getPeerId();
+    // if (selectedUserId) {
+
+    //   console.log('selected user for video call'+ selectedUserId);
+    //   await videoService.startCall(selectedUserId);
+    //   setIsCallActive(true);
+    // }
+
     if (selectedUserId) {
+      console.log('Selected user for video call:', selectedUserId);
+  
+      // Emit 'start-call' event to notify the recipient
+      socketService.onStartCall(selectedUserId,peerId);
+  
       await videoService.startCall(selectedUserId);
       setIsCallActive(true);
     }

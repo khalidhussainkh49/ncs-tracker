@@ -1,29 +1,30 @@
 import mongoose from 'mongoose';
 
 const locationSchema = new mongoose.Schema({
-  userId: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'User', 
-    required: true,
-    index: true 
-  },
+  // userId: { 
+  //   type: mongoose.Schema.Types.ObjectId, 
+  //   ref: 'User', 
+  //   required: true,
+  //   index: true 
+  // },
+  userId: { type: String, required: true },
   location: {
     type: {
       type: String,
-      enum: ['Point'],
+      default: 'Point',
       required: true
     },
     coordinates: {
       type: [Number],
       required: true,
-      validate: {
-        validator: function(coords) {
-          return coords.length === 2 && 
-                 coords[0] >= -180 && coords[0] <= 180 && // longitude
-                 coords[1] >= -90 && coords[1] <= 90;     // latitude
-        },
-        message: 'Invalid coordinates'
-      }
+      // validate: {
+      //   validator: function(coords) {
+      //     return coords.length === 2 && 
+      //            coords[0] >= -180 && coords[0] <= 180 && // longitude
+      //            coords[1] >= -90 && coords[1] <= 90;     // latitude
+      //   },
+      //   message: 'Invalid coordinates'
+      // }
     }
   },
   timestamp: { 

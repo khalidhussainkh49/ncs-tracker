@@ -35,6 +35,7 @@ const corsOptions = {
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  transports: ['websocket', 'polling'], // Specify transports if necessary
   credentials: true,
   maxAge: 86400
 };
@@ -46,11 +47,13 @@ app.options('*', cors(corsOptions));
 
 // Configure Socket.IO with the same CORS options
 const io = new Server(httpServer, {
+  transports:corsOptions.transports,
   cors: {
     origin: corsOptions.origin,
     methods: corsOptions.methods,
     credentials: corsOptions.credentials,
     allowedHeaders: corsOptions.allowedHeaders
+   
   }
 });
 
@@ -81,30 +84,101 @@ if (process.env.NODE_ENV === 'production') {
 
 // Socket.IO connection handling
 io.on('connection', (socket) => {
-  console.log('User connected:', socket.id);
+  console.log(' A User connected:', socket.id);
 
   socket.on('user-connected', (userId) => {
     connectedUsers.set(socket.id, userId);
+    console.log(userId +'with socket id connected'+socket.id );
   });
 
-  socket.on('location-update', async ({ location }) => {
-    const userId = connectedUsers.get(socket.id);
-    if (userId) {
-      try {
-        // Save location to database
-        await LocationService.saveLocation(
-          userId,
-          location,
-          'SOCKET'
-        );
+  // socket.on('location-update', async ({ location }) => {
+  //   const userId = connectedUsers.get(socket.id);
+  //   if (userId) {
+  //     try {
+  //       // Save location to database
+  //       await LocationService.saveLocation(
+  //         userId,
+  //         location,
+  //         'SOCKET'
+  //       );
         
-        // Broadcast location update to all connected clients
-        io.emit('location-update', { userId, location });
-      } catch (error) {
-        console.error('Error saving location:', error);
-      }
-    }
-  });
+  //       // Broadcast location update to all connected clients
+  //       io.emit('location-update', { userId, location });
+  //     } catch (error) {
+  //       console.error('Error saving location:', error);
+  //     }
+  //   }
+  // });
+
+  socket.on('location-update', async (data) => {
+    // Broadcast location update to all connected clients
+    io.emit('location-update', data );
+
+
+    console.log(data + ' from node server socket ');
+    const {user, location} = data;
+    console.log(typeof user.id );
+    console.log(user);
+    console.log(location)
+
+     // Convert user.id to ObjectId correctly
+    const userId = user.id;
+    const latitude = Number(location.lat);
+    console.log(typeof location.lat + 'latitude'+ location.lat)
+    const longitude = Number(location.lng);
+
+
+
+
+     
+     
+
+    // Destructure user and location directly from the incoming data
+   // const { user, location } = data;
+
+    // Check if user and location are defined
+//     if (user && location) {
+//         try {
+//           //newUser = new mongoose.Types.ObjectId();
+//             // Save location to database
+//             await LocationService.saveLocation(
+//               userId,
+//              longitude,
+//               latitude
+        
+//          );
+
+//             // // Broadcast location update to all connected clients
+//             // io.emit('location-update', {
+//             //     userId: user.id,
+//             //     location: {
+//             //         lat: location.lat,
+//             //         lng: location.lng,
+//             //     },
+//             // });
+//         } catch (error) {
+//             console.error('Error saving location:', error);
+//         }
+//     } else {
+//         console.error('User or location is missing in the data:', data);
+//     }
+ });
+
+
+ socket.on("start-call", (data) => {                   ///////  for calls 
+  // Broadcast the call request to the receiver
+  const { to, from } = data;
+  io.to(to).emit("incoming-call", { from });
+});
+
+socket.on("join-room", (userId) => {
+  socket.join(userId);
+  console.log(`User ${userId} joined room`);
+});
+
+
+
+
 
   socket.on('private-message', ({ to, message }) => {
     io.to(to).emit('private-message', {

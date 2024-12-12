@@ -1,9 +1,19 @@
 import Location from '../models/Location.js';
+import mongoose from 'mongoose'; 
 
 class LocationService {
+
+/**
+     * Save a new location for a user
+     * @param {String} userId - The user's ID
+     * @param {number} longitude - Longitude coordinate
+     * @param {number} latitude - Latitude coordinate
+     */
+
+  
   /**
    * Save a new location for a user
-   * @param {string} userId - The user's ID
+   * @param {bject} userId - The user's ID
    * @param {number} longitude - Longitude coordinate
    * @param {number} latitude - Latitude coordinate
    * @param {Object} options - Additional location options
@@ -12,11 +22,14 @@ class LocationService {
   static async saveLocation(userId, longitude, latitude, options = {}) {
     try {
       const locationData = {
-        userId,
+      
         location: {
+          userId: userId,
           type: 'Point',
           coordinates: [longitude, latitude]
         },
+        timestamp: new Date(),
+        source: 'SOCKET',
         ...options
       };
 
@@ -35,7 +48,7 @@ class LocationService {
    * @param {Object} options - Query options (limit, startDate, endDate)
    * @returns {Promise<Location[]>} Array of location documents
    */
-  static async getLocationHistory(userId, options = {}) {
+ static  async getLocationHistory(userId, options = {}) {
     const { limit = 100, startDate, endDate } = options;
     
     const query = { userId };
