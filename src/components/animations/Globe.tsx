@@ -55,10 +55,10 @@ export default function Globe() {
   return (
     <div className="fixed inset-0 w-full h-screen bg-[#111111] flex flex-col items-center justify-center gap-8">
       <div className="text-center">
-        <h1 className="text-6xl font-bold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-transparent bg-clip-text animate-pulse hover:scale-105 transition-transform duration-300">
+{/*         <h1 className="text-6xl font-bold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-transparent bg-clip-text animate-pulse hover:scale-105 transition-transform duration-300">
           E-enforcement
         </h1>
-      </div>
+      </div> */}
       
       <div 
         ref={containerRef} 
