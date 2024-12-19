@@ -11,6 +11,7 @@ import useSound from 'use-sound';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw/dist/leaflet.draw.css';
 import L from 'leaflet';
+import { FeatureLayer, ImageMapLayer } from 'react-esri-leaflet';
 
 const { BaseLayer } = LayersControl;
 
@@ -155,6 +156,72 @@ export default function Map({ users, selectedUsers }: MapProps) {
               url="https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
             />
           </BaseLayer>
+          <LayersControl.Overlay name="Seizures">
+    <FeatureLayer
+      url="https://cgiu.nigeriatradehub.gov.ng/server/rest/services/Hosted/survey123_4773a21ac0e54754a9cbc458709be35e/FeatureServer/0"
+      style={() => ({
+        color: '#ff7800',
+        weight: 2,
+        fillOpacity: 0.5,
+      })}
+      onEachFeature={(feature, layer) => {
+        if (feature.properties) {
+          layer.bindPopup(`
+            <div>
+              <h3 class="font-bold">${feature.properties.name || 'Location'}</h3>
+              <p>${feature.properties.description || ''}</p>
+            </div>
+          `);
+        }
+      }}
+    />
+  </LayersControl.Overlay>
+
+  <LayersControl.Overlay name="Seizures1">
+    <FeatureLayer
+      url="https://cgiu.nigeriatradehub.gov.ng/server/rest/services/Hosted/FOU_A_Enforcement_App/FeatureServer/0"
+      style={() => ({
+        color: '#ff7800',
+        weight: 2,
+        fillOpacity: 0.5,
+      })}
+      onEachFeature={(feature: { properties: { name: any; description: any; }; }, layer: { bindPopup: (arg0: string) => void; }) => {
+        if (feature.properties) {
+          layer.bindPopup(`
+            <div>
+              <h3 class="font-bold">${feature.properties.name || 'Location'}</h3>
+              <p>${feature.properties.description || ''}</p>
+            </div>
+          `);
+        }
+      }}
+    />
+  </LayersControl.Overlay>
+
+<LayersControl.Overlay name="Customs Locations">
+    <ImageMapLayer
+      url={"https://cgiu.nigeriatradehub.gov.ng/server/rest/services/Hosted/FOU_A_Enforcement_App/FeatureServer"}
+
+      opacity={0.5} // Adjust opacity as needed
+      // style={() => ({
+      //   color: '#ff7800',
+      //   weight: 2,
+      //   fillOpacity: 0.5,
+      // })}
+      // onEachFeature={(feature, layer) => {
+      //   if (feature.properties) {
+      //     layer.bindPopup(`
+      //       <div>
+      //         <h3 class="font-bold">${feature.properties.name || 'Location'}</h3>
+      //         <p>${feature.properties.description || ''}</p>
+      //       </div>
+      //     `);
+      //   }
+      // }}
+    />
+  </LayersControl.Overlay>
+
+          
         </LayersControl>
 
         <MapController selectedUsers={selectedUsers} users={users} />

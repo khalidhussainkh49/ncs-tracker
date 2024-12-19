@@ -75,7 +75,7 @@ export default function Sidebar({ users, selectedUsers, onClearSelection }: Side
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-2">
           <Users className="w-6 h-6 text-indigo-600" />
-          <h1 className="text-xl font-semibold">User Tracker</h1>
+          <h1 className="text-xl font-semibold">NCS-eEnforcement</h1>
         </div>
         {selectedUsers.length > 0 && (
           <button

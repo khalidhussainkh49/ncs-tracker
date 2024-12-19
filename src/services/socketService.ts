@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client';
 import { API_URL } from '../config/constants';
 import type { User, Location } from '../types/user';
-import videoService from './videoService';
+
 
 class SocketService {
   private static instance: SocketService;

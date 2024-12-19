@@ -19,7 +19,7 @@ class LocationService {
    * @param {Object} options - Additional location options
    * @returns {Promise<Location>} The saved location document
    */
-  static async saveLocation(userId, longitude, latitude, options = {}) {
+  static async saveLocation(userId, longitude, latitude, options = {}) {           // use user and location object ans destrucutre it instead of passing userid
     try {
       const locationData = {
       
